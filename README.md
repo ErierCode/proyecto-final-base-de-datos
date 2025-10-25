@@ -180,14 +180,15 @@ mini-datagrip/
 │   ├── api/               # API Routes
 │   │   ├── connect/       # Gestión de conexiones
 │   │   ├── query/         # Ejecución de consultas
-│   │   └── history/        # Historial de consultas
+│   │   └── history/       # Historial de consultas
 │   ├── globals.css        # Estilos globales
 │   ├── layout.tsx         # Layout principal
 │   └── page.tsx           # Página principal
 ├── components/            # Componentes React
 │   ├── ConnectionForm.tsx # Formulario de conexión
 │   ├── QueryEditor.tsx   # Editor de consultas
-│   └── AutoConnector.tsx # Configuración automática
+│   ├── ResultsView.tsx    # Vista de resultados
+│   └── Sidebar.tsx        # Barra lateral
 ├── lib/                   # Utilidades y lógica
 │   ├── mongodb.ts        # Cliente MongoDB
 │   ├── postgres.ts       # Cliente PostgreSQL
@@ -232,13 +233,26 @@ mini-datagrip/
 - Gestión de pestañas
 - Operaciones de archivo (copiar, descargar, limpiar)
 
-### `AutoConnector.tsx`
-**Propósito**: Configuración automática de conexiones de base de datos.
+### `ResultsView.tsx`
+**Propósito**: Componente para mostrar los resultados de las consultas.
+
+**Props**:
+- `result`: Resultado de la consulta ejecutada
 
 **Funcionalidades**:
-- Detección automática de bases de datos locales
-- Configuración rápida para desarrollo
-- Soporte para Docker y servicios locales
+- Vista tabular para resultados SQL
+- Vista JSON para resultados MongoDB
+- Información de ejecución (tiempo, filas)
+- Exportación de resultados
+
+### `Sidebar.tsx`
+**Propósito**: Barra lateral con explorador de esquemas y conexiones.
+
+**Funcionalidades**:
+- Lista de conexiones guardadas
+- Explorador de esquemas dinámico
+- Gestión de conexiones (crear, eliminar)
+- Navegación por tablas/colecciones
 
 ## 🔌 API Routes
 

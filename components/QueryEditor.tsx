@@ -144,7 +144,7 @@ export default function QueryEditor({ activeConnection, onQueryResult }: QueryEd
   // Manejar atajos de teclado
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'F5' || (e.ctrlKey && e.key === 'Enter')) {
+      if ((e.ctrlKey && e.key === 'Enter')) {
         e.preventDefault();
         executeQuery();
       }
