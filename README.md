@@ -28,7 +28,7 @@ Una aplicación web moderna para la gestión y consulta de bases de datos Postgr
 - **Monaco Editor**: Editor de código profesional con resaltado de sintaxis
 - **Múltiples pestañas**: Gestión de consultas independientes
 - **Autocompletado**: Sugerencias inteligentes para SQL y MongoDB
-- **Atajos de teclado**: F5 o Ctrl+Enter para ejecutar consultas
+- **Atajos de teclado**: Ctrl+Enter para ejecutar consultas
 
 ### 🗂️ Explorador de Esquemas
 - **Vista jerárquica**: Navegación por bases de datos, tablas/colecciones y columnas
@@ -229,7 +229,7 @@ mini-datagrip/
 
 **Funcionalidades**:
 - Resaltado de sintaxis dinámico (SQL/JavaScript/JSON)
-- Atajos de teclado (F5, Ctrl+Enter)
+- Atajos de teclado (Ctrl+Enter)
 - Gestión de pestañas
 - Operaciones de archivo (copiar, descargar, limpiar)
 
