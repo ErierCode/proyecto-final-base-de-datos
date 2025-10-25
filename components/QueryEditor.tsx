@@ -47,12 +47,12 @@ export default function QueryEditor({ activeConnection, onQueryResult }: QueryEd
 
   const executeQuery = async () => {
     if (!activeConnection) {
-      toast.error('No hay conexión activa');
+      toast.error('❌ No hay conexión activa. Por favor, selecciona una conexión de base de datos.');
       return;
     }
     
     if (!query.trim()) {
-      toast.error('Escribe una consulta para ejecutar');
+      toast.error('❌ Escribe una consulta para ejecutar. El editor está vacío.');
       return;
     }
 
@@ -116,7 +116,7 @@ export default function QueryEditor({ activeConnection, onQueryResult }: QueryEd
         }
 
         toast.dismiss('query-execution');
-        toast.success(`Consulta ejecutada exitosamente (${executionTime}ms)`);
+        toast.success(`✅ Consulta ejecutada exitosamente en ${executionTime}ms`);
       } else {
         const errorResult: QueryResult = {
           success: false,
@@ -125,28 +125,34 @@ export default function QueryEditor({ activeConnection, onQueryResult }: QueryEd
         };
         onQueryResult(errorResult);
         toast.dismiss('query-execution');
-        toast.error(`Error: ${result.error || 'Error desconocido'}`);
+        toast.error(`❌ Error en la consulta: ${result.error || 'Error desconocido'}`);
       }
     } catch (error) {
       const errorResult: QueryResult = {
         success: false,
-        error: 'Error de conexión',
+        error: 'Error de conexión con la base de datos',
         executionTime: Date.now() - startTime
       };
       onQueryResult(errorResult);
       toast.dismiss('query-execution');
-      toast.error('Error de conexión');
+      toast.error('❌ Error de conexión. Verifica que la base de datos esté disponible.');
     } finally {
       setIsExecuting(false);
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'F5' || (e.ctrlKey && e.key === 'Enter')) {
-      e.preventDefault();
-      executeQuery();
-    }
-  };
+  // Manejar atajos de teclado
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey && e.key === 'Enter')) {
+        e.preventDefault();
+        executeQuery();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [executeQuery]);
 
   const getLanguage = () => {
     if (!activeConnection) return 'sql';
@@ -207,7 +213,7 @@ db.stats()
 
   const copyQuery = () => {
     navigator.clipboard.writeText(query);
-    toast.success('Consulta copiada al portapapeles');
+    toast.success('📋 Consulta copiada al portapapeles');
   };
 
   const downloadQuery = () => {
@@ -218,7 +224,7 @@ db.stats()
     a.download = `query_${Date.now()}.${getLanguage()}`;
     a.click();
     URL.revokeObjectURL(url);
-    toast.success('Consulta descargada');
+    toast.success('💾 Consulta descargada exitosamente');
   };
 
   const resetQuery = () => {
@@ -226,7 +232,7 @@ db.stats()
     if (currentTab) {
       updateTab(currentTab.id, { query: '', isDirty: false });
     }
-    toast.success('Editor limpiado');
+    toast.success('🧹 Editor limpiado');
   };
 
   return (
@@ -291,7 +297,6 @@ db.stats()
           language={getLanguage()}
           value={query}
           onChange={handleQueryChange}
-          onKeyDown={handleKeyDown}
           theme="vs-dark"
           options={{
             minimap: { enabled: false },

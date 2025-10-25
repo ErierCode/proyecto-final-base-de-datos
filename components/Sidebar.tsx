@@ -59,8 +59,18 @@ export default function Sidebar({
   };
 
   const handleDeleteConnection = (connectionId: string) => {
-    if (confirm('¿Estás seguro de que quieres eliminar esta conexión?')) {
+    const connection = connections.find(c => c.id === connectionId);
+    const connectionName = connection?.name || 'esta conexión';
+    
+    if (confirm(`⚠️ ¿Estás seguro de que quieres eliminar "${connectionName}"?\n\nEsta acción no se puede deshacer y se perderán todas las configuraciones de esta conexión.`)) {
       deleteConnection(connectionId);
+      // Mostrar mensaje de éxito
+      if (typeof window !== 'undefined') {
+        // Usar toast si está disponible, sino alert
+        if (window.confirm) {
+          alert(`✅ Conexión "${connectionName}" eliminada exitosamente.`);
+        }
+      }
     }
   };
 

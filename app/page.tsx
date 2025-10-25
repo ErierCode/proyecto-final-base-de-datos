@@ -13,6 +13,8 @@ import toast from "react-hot-toast";
 export default function HomePage() {
   const [showConnectionForm, setShowConnectionForm] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showManual, setShowManual] = useState(false);
   const [queryResult, setQueryResult] = useState<QueryResult | null>(null);
 
   const {
@@ -188,7 +190,8 @@ export default function HomePage() {
             <History className="w-4 h-4 text-dark-text-secondary" />
           </button>
 
-          <button className="p-2 hover:bg-dark-bg rounded-md transition-colors">
+          <button onClick={() => setShowSettings(true)}
+            className="p-2 hover:bg-dark-bg rounded-md transition-colors">
             <Settings className="w-4 h-4 text-dark-text-secondary" />
           </button>
         </div>
@@ -212,11 +215,10 @@ export default function HomePage() {
               {tabs.map((tab) => (
                 <div
                   key={tab.id}
-                  className={`flex items-center gap-2 px-4 py-2 border-r border-dark-border cursor-pointer transition-colors ${
-                    activeTab === tab.id
-                      ? "bg-dark-bg text-dark-text border-b-2 border-accent-blue"
-                      : "text-dark-text-secondary hover:text-dark-text hover:bg-dark-bg"
-                  }`}
+                  className={`flex items-center gap-2 px-4 py-2 border-r border-dark-border cursor-pointer transition-colors ${activeTab === tab.id
+                    ? "bg-dark-bg text-dark-text border-b-2 border-accent-blue"
+                    : "text-dark-text-secondary hover:text-dark-text hover:bg-dark-bg"
+                    }`}
                   onClick={() => setActiveTab(tab.id)}
                 >
                   <span className="text-sm">{tab.name}</span>
@@ -327,9 +329,8 @@ export default function HomePage() {
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex items-center gap-2">
                           <div
-                            className={`w-2 h-2 rounded-full ${
-                              history.success ? "bg-accent-green" : "bg-red-500"
-                            }`}
+                            className={`w-2 h-2 rounded-full ${history.success ? "bg-accent-green" : "bg-red-500"
+                              }`}
                           />
                           <span className="text-sm font-medium text-dark-text">
                             {history.databaseType?.toUpperCase() || "UNKNOWN"}
@@ -375,6 +376,187 @@ export default function HomePage() {
                   ))}
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Modal de configuración */}
+      {showSettings && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-dark-panel rounded-lg w-full mx-4 max-w-md overflow-hidden">
+            <div className="flex items-center justify-between p-4 border-b border-dark-border">
+              <h2 className="text-lg font-semibold text-dark-text">Configuración</h2>
+              <button
+                onClick={() => setShowSettings(false)}
+                className="p-2 hover:bg-dark-bg rounded-md transition-colors"
+              >
+                <X className="w-5 h-5 text-dark-text-secondary" />
+              </button>
+            </div>
+
+            <div className="p-4 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-dark-text mb-2">
+                  Ayuda
+                </label>
+                <button
+                  onClick={() => {
+                    setShowSettings(false);
+                    setShowManual(true);
+                  }}
+                  className="px-3 py-2 bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
+                >
+                  📖 Ver Manual de Comandos
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de manual */}
+      {showManual && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-dark-panel rounded-lg w-full h-[80vh] mx-4 max-w-4xl overflow-hidden">
+            <div className="flex items-center justify-between p-4 border-b border-dark-border">
+              <h2 className="text-lg font-semibold text-dark-text">Manual de Comandos</h2>
+              <button
+                onClick={() => setShowManual(false)}
+                className="p-2 hover:bg-dark-bg rounded-md transition-colors"
+              >
+                <X className="w-5 h-5 text-dark-text-secondary" />
+              </button>
+            </div>
+
+            <div className="max-h-[calc(80vh-4rem)] overflow-y-auto p-4">
+              <div className="space-y-6">
+                {/* PostgreSQL */}
+                <div>
+                  <h3 className="text-xl font-semibold text-dark-text mb-4 flex items-center gap-2">
+                    <Database className="w-5 h-5 text-blue-400" />
+                    PostgreSQL
+                  </h3>
+                  <div className="bg-dark-bg rounded-lg p-4 space-y-3">
+                    <div>
+                      <h4 className="font-medium text-dark-text mb-2">Consultas básicas:</h4>
+                      <pre className="text-sm text-dark-text-secondary bg-dark-panel p-3 rounded overflow-x-auto">
+                        {`SELECT * FROM tabla WHERE condicion = 'valor';
+INSERT INTO tabla (columna1, columna2) VALUES ('valor1', 'valor2');
+UPDATE tabla SET columna = 'nuevo_valor' WHERE condicion = 'valor';
+DELETE FROM tabla WHERE condicion = 'valor';`}
+                      </pre>
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-dark-text mb-2">Crear tablas:</h4>
+                      <pre className="text-sm text-dark-text-secondary bg-dark-panel p-3 rounded overflow-x-auto">
+                        {`CREATE TABLE usuarios (
+  id SERIAL PRIMARY KEY,
+  nombre VARCHAR(100),
+  email VARCHAR(100),
+  fecha_creacion TIMESTAMP DEFAULT NOW()
+);`}
+                      </pre>
+                    </div>
+                  </div>
+                </div>
+
+                {/* MongoDB */}
+                <div>
+                  <h3 className="text-xl font-semibold text-dark-text mb-4 flex items-center gap-2">
+                    <Database className="w-5 h-5 text-green-400" />
+                    MongoDB
+                  </h3>
+
+                  {/* Forma 1: Comandos directos */}
+                  <div className="mb-4">
+                    <h4 className="font-medium text-dark-text mb-2">1. Comandos directos (db.*):</h4>
+                    <div className="bg-dark-bg rounded-lg p-4 space-y-3">
+                      <pre className="text-sm text-dark-text-secondary bg-dark-panel p-3 rounded overflow-x-auto">
+                        {`// Crear colección
+db.createCollection("usuarios")
+
+// Insertar documentos
+db.usuarios.insertOne({
+  nombre: "Juan",
+  edad: 25,
+  email: "juan@email.com"
+})
+
+// Consultar documentos
+db.usuarios.find()
+db.usuarios.find({edad: {$gt: 20}})
+
+// Actualizar documentos
+db.usuarios.updateOne(
+  {nombre: "Juan"}, 
+  {$set: {edad: 26}}
+)
+
+// Eliminar documentos
+db.usuarios.deleteOne({nombre: "Juan"})`}
+                      </pre>
+                    </div>
+                  </div>
+
+                  {/* Forma 2: SQL */}
+                  <div className="mb-4">
+                    <h4 className="font-medium text-dark-text mb-2">2. Comandos SQL:</h4>
+                    <div className="bg-dark-bg rounded-lg p-4 space-y-3">
+                      <pre className="text-sm text-dark-text-secondary bg-dark-panel p-3 rounded overflow-x-auto">
+                        {`// Crear colección
+CREATE TABLE usuarios
+
+// Insertar documentos
+INSERT INTO usuarios VALUES ('Juan', 25, 'juan@email.com')
+
+// Consultar documentos
+SELECT * FROM usuarios WHERE edad > 20 LIMIT 10
+
+// Actualizar documentos
+UPDATE usuarios SET edad = 26 WHERE nombre = 'Juan'
+
+// Eliminar documentos
+DELETE FROM usuarios WHERE nombre = 'Juan'`}
+                      </pre>
+                    </div>
+                  </div>
+
+                  {/* Forma 3: JSON estructurado */}
+                  <div>
+                    <h4 className="font-medium text-dark-text mb-2">3. Comandos JSON estructurado:</h4>
+                    <div className="bg-dark-bg rounded-lg p-4 space-y-3">
+                      <pre className="text-sm text-dark-text-secondary bg-dark-panel p-3 rounded overflow-x-auto">
+                        {`// Consultar documentos
+{
+  "collection": "usuarios",
+  "operation": "find",
+  "filter": {"edad": {"$gt": 20}},
+  "limit": 10
+}
+
+// Insertar documento
+{
+  "collection": "usuarios",
+  "operation": "insertOne",
+  "document": {
+    "nombre": "Juan",
+    "edad": 25,
+    "email": "juan@email.com"
+  }
+}
+
+// Actualizar documento
+{
+  "collection": "usuarios",
+  "operation": "updateOne",
+  "filter": {"nombre": "Juan"},
+  "update": {"edad": 26}
+}`}
+                      </pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

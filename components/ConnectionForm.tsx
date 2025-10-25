@@ -30,7 +30,7 @@ export default function ConnectionForm({ onConnectionSuccess }: ConnectionFormPr
     setFormData(prev => {
       const newData = {
         ...prev,
-        [name]: value
+        [name]: value,
       };
       
       // Cambiar puerto por defecto según el tipo de base de datos
