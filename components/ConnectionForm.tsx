@@ -36,11 +36,11 @@ export default function ConnectionForm({ onConnectionSuccess }: ConnectionFormPr
       // Cambiar puerto por defecto según el tipo de base de datos
       if (name === 'type') {
         newData.port = value === 'mongodb' ? '27017' : '5432';
-        // Para MongoDB, limpiar credenciales si están vacías (conexión sin autenticación)
-        if (value === 'mongodb' && (!newData.username || !newData.password)) {
-          newData.username = '';
-          newData.password = '';
-        }
+        // Limpiar campos al cambiar tipo de conexión
+        newData.username = '';
+        newData.password = '';
+        newData.database = '';
+        newData.name = '';
       }
       
       return newData;
@@ -62,9 +62,33 @@ export default function ConnectionForm({ onConnectionSuccess }: ConnectionFormPr
       });
 
       const result = await response.json();
+      
+      let errorMessage = 'Error desconocido';
+      
+      if (result.success) {
+        errorMessage = 'Conexión exitosa';
+      } else if (result.error) {
+        // Mensajes de error más descriptivos
+        if (result.error.includes('ECONNREFUSED')) {
+          errorMessage = 'No se puede conectar al servidor. Verifica que el servicio esté ejecutándose y el puerto sea correcto.';
+        } else if (result.error.includes('ENOTFOUND')) {
+          errorMessage = 'No se puede encontrar el servidor. Verifica que la dirección del host sea correcta.';
+        } else if (result.error.includes('authentication failed') || result.error.includes('password authentication failed')) {
+          errorMessage = 'Error de autenticación. Verifica que el usuario y contraseña sean correctos.';
+        } else if (result.error.includes('database') && result.error.includes('does not exist')) {
+          errorMessage = 'La base de datos no existe. Verifica que el nombre de la base de datos sea correcto.';
+        } else if (result.error.includes('timeout')) {
+          errorMessage = 'Tiempo de espera agotado. El servidor no responde.';
+        } else if (result.error.includes('Todos los campos son requeridos')) {
+          errorMessage = 'Por favor, completa todos los campos obligatorios.';
+        } else {
+          errorMessage = result.error;
+        }
+      }
+      
       setTestResult({
         success: result.success,
-        message: result.data?.message || result.error || 'Error desconocido'
+        message: errorMessage
       });
 
       if (result.success && result.data?.schemas) {
@@ -74,7 +98,7 @@ export default function ConnectionForm({ onConnectionSuccess }: ConnectionFormPr
     } catch (error) {
       setTestResult({
         success: false,
-        message: 'Error de conexión'
+        message: 'Error de red. Verifica tu conexión a internet y que el servidor esté disponible.'
       });
     } finally {
       setIsLoading(false);
