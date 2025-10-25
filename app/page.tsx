@@ -198,7 +198,7 @@ export default function HomePage() {
       </header>
 
       {/* Contenido principal */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-auto">
         {/* Sidebar */}
         <Sidebar
           schemas={schemas}

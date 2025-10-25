@@ -67,7 +67,7 @@ export default function Sidebar({
       // Mostrar mensaje de éxito
       if (typeof window !== 'undefined') {
         // Usar toast si está disponible, sino alert
-        if (window.confirm) {
+        if (window.confirm()) {
           alert(`✅ Conexión "${connectionName}" eliminada exitosamente.`);
         }
       }
