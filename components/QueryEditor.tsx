@@ -285,7 +285,7 @@ db.stats()
             className="flex items-center gap-2 px-4 py-2 bg-accent-blue text-white rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <Play className="w-4 h-4" />
-            {isExecuting ? 'Ejecutando...' : 'Ejecutar (F5)'}
+            {isExecuting ? 'Ejecutando...' : 'Ejecutar'}
           </button>
         </div>
       </div>
@@ -350,10 +350,6 @@ db.stats()
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <kbd className="px-2 py-1 bg-dark-bg border border-dark-border rounded text-xs">
-              F5
-            </kbd>
-            <span>o</span>
             <kbd className="px-2 py-1 bg-dark-bg border border-dark-border rounded text-xs">
               Ctrl+Enter
             </kbd>
